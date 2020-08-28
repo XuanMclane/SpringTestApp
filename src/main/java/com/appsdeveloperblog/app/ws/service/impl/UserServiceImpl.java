@@ -4,6 +4,7 @@ import com.appsdeveloperblog.app.ws.exception.UserServiceException;
 import com.appsdeveloperblog.app.ws.io.entity.UserEntity;
 import com.appsdeveloperblog.app.ws.io.repository.UserRepository;
 import com.appsdeveloperblog.app.ws.service.UserService;
+import com.appsdeveloperblog.app.ws.shared.AmazonSES;
 import com.appsdeveloperblog.app.ws.shared.Utils;
 import com.appsdeveloperblog.app.ws.shared.dto.AddressDto;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
@@ -63,6 +64,10 @@ public class UserServiceImpl implements UserService {
         //UserDto returnValue = new UserDto();
         //BeanUtils.copyProperties(storedUserDetails, returnValue);
         UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
+
+        // Send email verification
+        new AmazonSES().verifyEmail(returnValue);
+
         return returnValue;
     }
 
@@ -150,6 +155,9 @@ public class UserServiceImpl implements UserService {
 
         if (userEntity == null) throw new UsernameNotFoundException(email);
 
-        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
+        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(),
+                userEntity.getEmailVerificationStatus(), true, true, true, new ArrayList<>());
+
+        //return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
     }
 }
