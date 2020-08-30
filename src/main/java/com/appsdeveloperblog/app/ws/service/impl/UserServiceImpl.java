@@ -40,10 +40,13 @@ public class UserServiceImpl implements UserService {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    AmazonSES amazonSES;
+
     @Override
     public UserDto createUser(UserDto user) {
         if (userRepository.findByEmail(user.getEmail()) != null)
-            throw new RuntimeException("Record already exists");
+            throw new UserServiceException("Record already exists");
 
         //UserEntity userEntity = new UserEntity();
         //BeanUtils.copyProperties(user, userEntity);
@@ -61,7 +64,7 @@ public class UserServiceImpl implements UserService {
         String publicUserId = utils.generateUserId(30);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userEntity.setUserId(publicUserId);
-        userEntity.setEmailVerificationToken(Utils.generateEmailVerificationToken(publicUserId));
+        userEntity.setEmailVerificationToken(utils.generateEmailVerificationToken(publicUserId));
         userEntity.setEmailVerificationStatus(false);
 
         UserEntity storedUserDetails = userRepository.save(userEntity);
@@ -71,7 +74,7 @@ public class UserServiceImpl implements UserService {
         UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
 
         // Send email verification
-        new AmazonSES().verifyEmail(returnValue);
+        amazonSES.verifyEmail(returnValue);
 
         return returnValue;
     }
