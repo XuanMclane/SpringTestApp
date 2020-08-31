@@ -65,8 +65,6 @@ public class UserController {
 
     @PutMapping(path="/{id}")
     public UserRest updateUser(@PathVariable String id, @RequestBody UserDetailsRequestModel userDetails) {
-        UserRest returnValue = new UserRest();
-
         if(userDetails.getFirstName().isEmpty())
             throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 
@@ -76,7 +74,7 @@ public class UserController {
         UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 
         UserDto updatedUser = userService.updateUser(id, userDto);
-        BeanUtils.copyProperties(updatedUser, returnValue);
+        UserRest returnValue = modelMapper.map(updatedUser, UserRest.class);
 
         return returnValue;
     }
