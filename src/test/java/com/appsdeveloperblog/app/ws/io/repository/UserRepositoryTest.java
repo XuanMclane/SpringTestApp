@@ -94,4 +94,33 @@ class UserRepositoryTest {
         UserEntity user = userRepository.findByUserId("fs0i3PIdgnv0mnx4wq0qyrlk4ah0pl");
         assertEquals(user.getEmailVerificationStatus(), true);
     }
+
+    @Test
+    void testFindUserEntityByUserId() {
+        String userId = "fs0i3PIdgnv0mnx4wq0qyrlk4ah0pl";
+        UserEntity user = userRepository.findUserEntityByUserId(userId);
+        assertNotNull(user);
+        assertEquals(user.getUserId(), userId);
+    }
+
+    @Test
+    void getUserFullNameByUserId() {
+        String userId = "fs0i3PIdgnv0mnx4wq0qyrlk4ah0pl";
+        List<Object[]> users = userRepository.getuserEntityFullNameById(userId);
+        Object[] user = users.get(0);
+        String firstName = String.valueOf(user[0]);
+        String lastName = String.valueOf(user[0]);
+        assertNotNull(firstName);
+        assertNotNull(lastName);
+    }
+
+    @Test
+    void updateUserEntityEmailVerification() {
+        String userId = "fs0i3PIdgnv0mnx4wq0qyrlk4ah0pl";
+        userRepository.updateUserEntityEmailVerificationStatus(false, userId);
+        UserEntity user = userRepository.findUserEntityByUserId(userId);
+        assertNotNull(user);
+        assertEquals(user.getUserId(), userId);
+        assertEquals(user.getEmailVerificationStatus(), false);
+    }
 }

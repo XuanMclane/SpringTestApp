@@ -3,7 +3,8 @@ package com.appsdeveloperblog.app.ws.io.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity(name="password_reset_tokens")
+@Entity
+@Table(name="password_reset_tokens")
 public class PasswordResetTokenEntity implements Serializable {
     private static final long serialVersionUID = 8031323414462829789L;
 
