@@ -28,8 +28,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .cors().and()
+        http.cors().and()
                 .csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
                 .permitAll()
@@ -40,6 +39,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, SecurityConstants.PASSWORD_RESET_URL)
                 .permitAll()
                 .antMatchers(SecurityConstants.H2_CONSOLE)
+                .permitAll()
+                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

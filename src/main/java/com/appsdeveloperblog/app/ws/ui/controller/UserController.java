@@ -9,6 +9,9 @@ import com.appsdeveloperblog.app.ws.ui.model.request.PasswordResetModel;
 import com.appsdeveloperblog.app.ws.ui.model.request.PasswordResetRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.request.UserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.*;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +39,11 @@ public class UserController {
     @Autowired
     AddressService addressService;
 
+    @ApiOperation(value="Get User Details",
+        notes = "${userController.getUser.apiOperation.note}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @GetMapping(path="/{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public UserRest getUser(@PathVariable String id) {
         ModelMapper modelMapper = new ModelMapper();
@@ -45,6 +53,9 @@ public class UserController {
         return returnValue;
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception {
         //UserRest returnValue = new UserRest();
@@ -64,6 +75,9 @@ public class UserController {
         return returnValue;
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @PutMapping(path="/{id}")
     public UserRest updateUser(@PathVariable String id, @RequestBody UserDetailsRequestModel userDetails) {
         if(userDetails.getFirstName().isEmpty())
@@ -80,6 +94,9 @@ public class UserController {
         return returnValue;
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @DeleteMapping(path = "/{id}")
     public OperationStatusModel deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
@@ -89,6 +106,9 @@ public class UserController {
         return returnValue;
     }
 
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "Authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @GetMapping
     public List<UserRest> getUsers(@RequestParam(value ="page", defaultValue = "0") int page,
                                    @RequestParam(value ="limit", defaultValue = "25") int limit) {
@@ -103,6 +123,9 @@ public class UserController {
         return returnValue;
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @GetMapping(path="/{id}/addresses", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public CollectionModel<AddressRest> getUserAddresses(@PathVariable String id) {
        List<AddressRest> returnValue = new ArrayList<>();
@@ -124,6 +147,9 @@ public class UserController {
        return CollectionModel.of(returnValue, userLink, self);
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @GetMapping(path="/{userId}/addresses/{addressId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public EntityModel<AddressRest> getUserAddress(@PathVariable String userId, @PathVariable String addressId) {
         AddressDto addressDto = addressService.getAddress(addressId);
